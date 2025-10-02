@@ -15,6 +15,21 @@ public class GoodsService {
     private GoodsMapper goodsMapper;
 
     public List<Goods> getAllGoods(){
+        // 모든 사용자 조회 -> 관리자의 권한으로 접속한 것인가
+        // 들어온 사람은 사용자 조회를 할 권리가 있는가
+        // 데이터를 어떻게 보여줄 것인가
         return goodsMapper.getAllGoods();
+    }
+    /*
+    void와 return 형태 모두 가능
+
+    void = 등록/실패를 예외가 발생해야 확인 가능
+
+    return = 성공시 1의 값을 반환
+             0일 경우 실패인 것으로
+             성공 실패에 대한 결과 유무를 소비자에게 전달할 수 있다.
+     */
+    public void insertGoods(Goods goods){
+        goodsMapper.insertGoods(goods);
     }
 }
