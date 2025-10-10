@@ -29,7 +29,7 @@ public interface GoodsMapper {
     </select>
     */
     /*
-    <insert id="inertGoods" parameterType="edu.the.joeun.model.Goods">
+    <insert id="insertGoods" parameterType="edu.the.joeun.model.Goods">
         Insert Into goods (name, price, stock) values (#{name}, #{price}, #{stock})
     </insert>
     */

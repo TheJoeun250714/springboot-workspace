@@ -24,7 +24,7 @@
         SELECT *
         FROM WHERE = #{id} <!-- java에서 조회하게 될 데이터가 들어있는 변수이름 설정 -->
     </select>
-    <insert id="inertGoods" parameterType="edu.the.joeun.model.Goods">
+    <insert id="insertGoods" parameterType="edu.the.joeun.model.Goods">
         Insert Into goods (name, price, stock)
         values (#{name}, #{price}, #{stock})
     </insert>
