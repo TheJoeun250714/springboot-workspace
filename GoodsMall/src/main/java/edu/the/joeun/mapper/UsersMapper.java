@@ -16,7 +16,7 @@ public interface UsersMapper {
     // 쿼리가 동작하긴 하지만
     // 유지보수가 어려워 사용을 지양하는 형태
     // @Insert("INSERT INTO user (name, email, role) VALUES (#{name}, #{email}, #{role})")
-   void insertUser();
+   void insertUser(User user);
 
     /*
     insert  의 경우  void 와 int 둘 다 가능
