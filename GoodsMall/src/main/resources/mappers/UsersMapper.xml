@@ -27,8 +27,8 @@
         WHERE = #{id}
     </select>
     <insert id="insertUser" parameterType="edu.the.joeun.model.User">
-        INSERT INTO user (name, email, role)
-                VALUES (#{name}, #{email}, #{role})
+        INSERT INTO user (name, email, password, role)
+                VALUES (#{name}, #{email},#{password}, #{role})
         <!--
         id, create_at, update_at 은 sql 자체에서 데이터 알아서 삽입하므로
         사용자가 작성한 데이터를 기입하지 않는다.
