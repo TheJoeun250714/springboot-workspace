@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="edu.the.joeun.mapper.UsersMapper">
+
+    <resultMap id="resultUser" type="edu.the.joeun.model.User">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="email" column="email"/>
+        <result property="role" column="role"/>
+        <result property="create_at" column="create_at"/>
+        <result property="update_at" column="update_at"/>
+    </resultMap>
+
+    <select id="getAllUser" resultMap="resultUser">
+        SELECT *
+        FROM user
+        ORDER BY id DESC
+    </select>
+
+    <select id="getUserById" parameterType="int" resultMap="resultUser">
+        SELECT *
+        FROM user
+        WHERE = #{id}
+    </select>
+    <insert id="insertUser" parameterType="edu.the.joeun.model.User">
+        INSERT INTO user (name, email, role)
+                VALUES (#{name}, #{email}, #{role})
+        <!--
+        id, create_at, update_at 은 sql 자체에서 데이터 알아서 삽입하므로
+        사용자가 작성한 데이터를 기입하지 않는다.
+        -->
+    </insert>
+</mapper>

@@ -105,4 +105,9 @@ public class 페이지이동이외모든작업Controller {
         goodsService.insertGoods(goods);
 
     }
+    /*
+    @PostMapping("/api/users")
+    public   반환 메서드명칭
+
+     */
 }
