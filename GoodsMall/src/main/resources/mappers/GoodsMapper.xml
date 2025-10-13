@@ -12,6 +12,7 @@
         <result property="name" column="name"/>
         <result property="price" column="price"/>
         <result property="stock" column="stock"/>
+        <result property="category" column="category"/>
     </resultMap>
     <!--모든 상품 조회 -->
     <select id="getAll" resultMap="goodsMap">
@@ -25,8 +26,8 @@
         FROM WHERE = #{id} <!-- java에서 조회하게 될 데이터가 들어있는 변수이름 설정 -->
     </select>
     <insert id="insertGoods" parameterType="edu.the.joeun.model.Goods">
-        Insert Into goods (name, price, stock)
-        values (#{name}, #{price}, #{stock})
+        Insert Into goods (name, price, stock,category)
+        values (#{name}, #{price}, #{stock},#{category})
     </insert>
     <!--
     MyBatis 에서 insert sql 을 정의하는 태그

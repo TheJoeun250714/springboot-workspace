@@ -382,13 +382,16 @@
         let html = '<div class="goods-grid">';
 
         goods.forEach((item) => {
+
             const stockClass =
                 item.stock === 0 ? "out" : item.stock < 10 ? "low" : "";
             const stockText = item.stock === 0 ? "품절" : `재고: ${item.stock}개`;
 
             html += `
                     <div class="goods-card">
+
                         <span class="goods-id">ID: ${item.id}</span>
+                        <span class="goods-category">${item.category}</span>
                         <div class="goods-name">${item.name}</div>
                         <div class="goods-info">
                             <span class="goods-price">${item.price.toLocaleString()}원</span>
