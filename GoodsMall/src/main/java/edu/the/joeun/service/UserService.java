@@ -24,6 +24,7 @@ public class UserService {
 
     public void insertUser(User user){
 
+        System.out.println(user.toString());
         String 유저작성패스워드 = user.getPassword();
         String 암호화처리패스워드 = bCryptPasswordEncoder.encode(유저작성패스워드);
 

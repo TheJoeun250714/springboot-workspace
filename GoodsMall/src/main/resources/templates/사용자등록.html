@@ -12,13 +12,10 @@
         <h1>The Mall</h1>
         <p class="subtitle">사용자 등록</p>
     </header>
-
     <div class="nav-buttons">
         <button class="btn-list" onclick="goToList()">📋 사용자 목록 보기</button>
     </div>
-
     <div id="alertBox"></div>
-
     <div class="form-container">
         <form id="userForm" onsubmit="submitUser(event)">
             <div class="form-group">
@@ -28,6 +25,10 @@
             <div class="form-group">
                 <label for="email">이메일<span class="required">*</span></label>
                 <input type="email" id="email" name="email" placeholder="이메일 주소를 입력하세요" required />
+            </div>
+            <div class="form-group">
+                <label for="password">비밀번호<span class="required">*</span></label>
+                <input type="password" id="password" name="password" placeholder="비밀번호를 입력하세요" required />
             </div>
             <!-- select형식에서   radio 형식으로 변환 후 권한 등록 설정
                 <label for="role">사용자권한구분<span class="required">*</span></label>
@@ -45,7 +46,6 @@
                         <input type="radio"name="role"  value="USER" required>
                         일반 사용자
                     </label>
-
                     <label>
                         <input type="radio"name="role"  value="ADMIN" required>
                         관리자
@@ -58,7 +58,6 @@
         </form>
     </div>
 </div>
-
 <script src="/js/userAdd.js"> </script>
 </body>
 </html>
