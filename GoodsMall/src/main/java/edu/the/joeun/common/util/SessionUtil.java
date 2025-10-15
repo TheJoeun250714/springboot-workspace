@@ -3,6 +3,8 @@ package edu.the.joeun.common.util;
 import edu.the.joeun.model.User;
 import jakarta.servlet.http.HttpSession;
 
+import javax.management.relation.Role;
+
 /**
  * 세션(Session)
  * 서버 측에서 관리하는 사용자의 연결 상태
@@ -50,4 +52,19 @@ public class SessionUtil {
      public static boolean isLoginUser(HttpSession session) {
          return session.getAttribute(LOGIN_USER) != null;
      }
+
+    /**
+     * 관리자 여부 확인
+     */
+    public static boolean isAdmin(HttpSession session) {
+        User user = getLoginUser(session);
+        return user != null && "ADMIN".equals(user.getRole());
+    }
+
+    /**
+     * 전체 세션 무효화(로그아웃)
+     */
+    public static void invalidate(HttpSession session) {
+        session.invalidate();
+    }
 }
