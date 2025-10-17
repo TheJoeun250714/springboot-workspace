@@ -27,44 +27,28 @@ import javax.management.relation.Role;
  */
 public class SessionUtil {
 
-
-    // 세션 키 상수 형태로 저장
     private static final String LOGIN_USER = "loginUser";
 
-    /**
-     * 로그인된 사용자 정보를 세션에 저장
-     */
     public static void setLoginUser(HttpSession session, User user) {
         session.setAttribute(LOGIN_USER, user);
         session.setMaxInactiveInterval(1800); // 30분만 로그인 설정
     }
 
-    /**
-     * 세션에서 로그인된 사용자 정보 가져오기
-     */
     public static User getLoginUser(HttpSession session) {
         return (User) session.getAttribute(LOGIN_USER);
     }
 
-    /**
-     * 로그인 여부 확인
-     */
      public static boolean isLoginUser(HttpSession session) {
          return session.getAttribute(LOGIN_USER) != null;
      }
 
-    /**
-     * 관리자 여부 확인
-     */
     public static boolean isAdmin(HttpSession session) {
         User user = getLoginUser(session);
         return user != null && "ADMIN".equals(user.getRole());
     }
 
-    /**
-     * 전체 세션 무효화(로그아웃)
-     */
     public static void invalidate(HttpSession session) {
         session.invalidate();
     }
 }
+
