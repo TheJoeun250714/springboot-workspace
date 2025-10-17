@@ -7,6 +7,7 @@ import org.hibernate.SessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -36,15 +37,32 @@ public class DBConfig {
     @Autowired
     private ApplicationContext  applicationContext; // 현재 프로젝트 파일 내용 모두 참고
 
+    @Value("${spring.datasource.url}") //properties에 작성한 속성명칭읽을 때 사용
+    private String jdbcUrl;
+
+    @Value("${spring.datasource.username}")
+    private String username;
+
+    @Value("${spring.datasource.password}")
+    private String password;
+
+    @Value("${spring.datasource.driver-class-name}")
+    private String driverClassName;
     // HIKARICP 설정 //
 
     @Bean
     @ConfigurationProperties(prefix = "spring.datasource.hikari")
     public HikariConfig  hikariConfig() {
+        HikariConfig config = new HikariConfig();
+        config.setJdbcUrl(jdbcUrl);
+        config.setUsername(username);
+        config.setPassword(password);
+        config.setDriverClassName(driverClassName);
 
         // src/main/resources/config.properties 파일에서 읽어온
         // spring.datasource.hikari 로 시작하는 모든 값을 이 설정 안에서 사용하겠다.
-        return new HikariConfig();
+        // return new HikariConfig();
+        return config;
     }
     // import javax.sql.DataSource;
     @Bean
