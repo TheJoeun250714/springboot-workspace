@@ -4,6 +4,7 @@ import edu.thejoeun.myblog.mapper.MemberMapper;
 import edu.thejoeun.myblog.model.Member;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -20,6 +21,8 @@ public class MemberServiceImpl implements MemberService {
 
     @Autowired
     private MemberMapper memberMapper;
+
+    private BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
 
     @Override
     public List<Member> selectMemberList() {
@@ -48,5 +51,15 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public Member getMemberById(String memberId) {
         return null;
+    }
+
+    @Override
+    public void saveMember(Member member) {
+        // 암호화 설정 비밀번호 저장
+        // html -> controller 로 가져온 데이터 중에서 멤버 비밀번호만 가져오기
+        // 가져온 비밀번호를 암호화 처리해서 다시 비밀번호 공간에 넣어놓기
+        member.setMemberPassword(bCryptPasswordEncoder.encode(member.getMemberPassword()));
+        // 모든 작업 이끝난 데이터를 DB에 저장하기
+        memberMapper.saveMember(member);
     }
 }

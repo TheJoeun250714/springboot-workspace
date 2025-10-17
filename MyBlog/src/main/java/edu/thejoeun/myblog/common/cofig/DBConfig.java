@@ -51,14 +51,13 @@ public class DBConfig {
     // HIKARICP 설정 //
 
     @Bean
-    @ConfigurationProperties(prefix = "spring.datasource.hikari")
+    @ConfigurationProperties(prefix = "spring.datasource")
     public HikariConfig  hikariConfig() {
         HikariConfig config = new HikariConfig();
         config.setJdbcUrl(jdbcUrl);
         config.setUsername(username);
         config.setPassword(password);
         config.setDriverClassName(driverClassName);
-
         // src/main/resources/config.properties 파일에서 읽어온
         // spring.datasource.hikari 로 시작하는 모든 값을 이 설정 안에서 사용하겠다.
         // return new HikariConfig();
@@ -70,7 +69,6 @@ public class DBConfig {
         DataSource dataSource = new HikariDataSource(config);
         return dataSource;
     }
-
     // MyBatis 설정
     @Bean
     public SqlSessionFactory sqlSessionFactory(DataSource dataSource) throws Exception {
@@ -81,7 +79,7 @@ public class DBConfig {
         // sessionFactory.setMapperLocations(현재프로젝트에서(어디에 위치한 mapper.xml 파일인지 위치 설정));
 
         sessionFactory.setMapperLocations(
-                applicationContext.getResources("classpath*:mappers/*.xml")
+                applicationContext.getResources("classpath:/mappers/**/*.xml")
         );
 
         // application.properties 에 작성한 model - mapper 를 연결해주는 속성 설정을
@@ -95,7 +93,7 @@ public class DBConfig {
 
         // 마이바티스 설정 파일 경로 지정
         sessionFactory.setConfigLocation(
-                applicationContext.getResource("classpath:mybatis-config.xml")
+                applicationContext.getResource("classpath:/mybatis-config.xml")
         );
 
         // 설정된 내용이 모두 적용된 상태로 객체 반환

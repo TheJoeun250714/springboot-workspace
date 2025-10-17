@@ -5,14 +5,21 @@ package edu.thejoeun.myblog.controller;
 
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class MemberController {
+    @GetMapping("/")
     public String getIndexPage(){
-        return "/";
+        return "index";
     }
-
+    @GetMapping("/member/list")
     public String getMemberPage(){
         return "member";
+    }
+
+    @GetMapping("/member/register")
+    public String getMemberRegisterPage(){
+        return "member_register";
     }
 }
