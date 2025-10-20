@@ -35,8 +35,12 @@ public class MemberServiceImpl  implements MemberService {
         if(member == null) {
             return null;
         }
+
+        System.out.println("DB PASSWORD : " + member.getMemberPassword());
+        System.out.println("memberPassword PASSWORD : " + memberPassword);
+
         // 비밀번호 일치하지 않은게 사실이라면 null
-        if(!bCryptPasswordEncoder.matches(member.getMemberPassword(), memberPassword)) {
+        if(!bCryptPasswordEncoder.matches(memberPassword,member.getMemberPassword())) {
             return null;
         }
 

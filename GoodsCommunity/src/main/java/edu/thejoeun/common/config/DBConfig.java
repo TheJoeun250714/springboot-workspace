@@ -48,6 +48,9 @@ public class DBConfig {
         sqlSessionFactoryBean.setMapperLocations(
                 applicationContext.getResources("classpath:/mappers/**/*.xml")
         );
+        sqlSessionFactoryBean.setTypeAliasesPackage("edu.thejoeun");
+
+
         sqlSessionFactoryBean.setConfigLocation(
                 applicationContext.getResource("classpath:/mybatis-config.xml")
         );

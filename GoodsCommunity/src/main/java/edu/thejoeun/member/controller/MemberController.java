@@ -16,18 +16,22 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-@SessionAttributes({"loginUser"})
+//@SessionAttributes({"loginUser"})
 @Controller
 public class MemberController {
 
     @Autowired
     MemberServiceImpl memberService;
 
+
     @GetMapping("/login")
     public String pageLogin(){
         return "pages/login";
     }
-
+    @GetMapping("/member/myPage")
+    public String getMyPage(){
+        return  "pages/myPage";
+    }
     // GPT or AI 경우 Model 로 모든 것을 처리함
     // Model 과 RedirectAttributes 구분해서 결과값을 클라이언트 전달
     @PostMapping("/login")
@@ -63,7 +67,8 @@ public class MemberController {
         아이디를 작성 안했는데 쿠키에 저장할 이유가 없으므로 아이디값을 작성하고 아이디 저장 체크를 했을 경우만
         30일 동안 아이디 명칭을 저장하겠다
          */
-        if (userIdCookie != null && saveId.equals("on")){
+        if ("on".equals(saveId)) {
+       // if (userIdCookie != null && saveId.equals("on")){
             //                   60 초 60분 24시간 30일 곱하여 총 30일 유효하게 설정
             userIdCookie.setMaxAge(60 * 60 * 24 * 30); // 30일 초 단위로 지정
         } else {
