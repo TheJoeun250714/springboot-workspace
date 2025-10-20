@@ -11,3 +11,7 @@
 </configuration>
 
 
+<!--
+package 에서 특정 폴더를 지정해서 설정하지 않음
+
+-->
