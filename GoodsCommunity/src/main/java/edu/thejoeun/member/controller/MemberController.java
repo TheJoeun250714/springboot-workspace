@@ -26,16 +26,14 @@ public class MemberController {
         return "index";
     }
 
+    //쿠키 설정할 때 아이디 저장 안되면 가장먼저하는 작업
+    // @CookieView 와 Model 은 필요 없음!!!
     @GetMapping("/login")
     public String pageLogin(
-                        @CookieValue(value = "saveId", required = false) String saveEmail,
-                        Model model
     ){
-        if(saveEmail != null){
-            model.addAttribute("saveEmail", saveEmail);
-        }
         return "pages/login";
     }
+
     @GetMapping("/member/myPage")
     public String getMyPage(){
         return  "pages/myPage";
@@ -53,38 +51,22 @@ public class MemberController {
                         Model model,
                         RedirectAttributes ra){
         Member member = memberService.login(memberEmail, memberPassword);
-
         if(member == null){
             ra.addFlashAttribute("error", "이메일 또는 비밀번호가 일치하지 않습니다.");
-            return "redirect:/login"; // 일치하지 않는게 맞다면 로그인 페이지로 돌려보내기
+            return "redirect:/login";
         }
-
-        // 세션에 로그인 정보 저장 이 방법을 쓰게되면 매번 로그인정보를 코드마다 세팅
-        // session.setAttribute("loginUser", member);
         SessionUtil.setLoginUser(session, member);
 
         // 쿠키에 사용자 정보 저장 (보안상 민감하지 않은 부분만 저장)
 
         Cookie userIdCookie = new Cookie("saveId", memberEmail);
         userIdCookie.setPath("/");
-        // 유저 아이디를 아이디 저장이 체크되어있으면 30일간 유저 아이디 저장
-        // 체크가 안되어 있으면 유저 아이디를 쿠키에 저장하지 않겠다
-        /*
-        체크박스에서 value 가 없을 때
-        - 체크가   된 경우 : on
-        - 체크가 안된 경우 : null
-        아이디 저장과 같이 단순 체크는 on - null 이용해서 체크 유무 확인
-        아이디를 작성 안했는데 쿠키에 저장할 이유가 없으므로 아이디값을 작성하고 아이디 저장 체크를 했을 경우만
-        30일 동안 아이디 명칭을 저장하겠다
-         */
-        if ("on".equals(saveIdCheck)) { // saveId 라는 것이 html 존재하지 않기 때문에 null 생성
-       // if (userIdCookie != null && saveId.equals("on")){
-            //                   60 초 60분 24시간 30일 곱하여 총 30일 유효하게 설정
-            userIdCookie.setMaxAge(60 * 60 * 24 * 30); // 30일 초 단위로 지정
-        } else {
-            userIdCookie.setMaxAge(0); // 클라이언트 쿠키 삭제
-        }
 
+        if (userIdCookie != null && saveIdCheck.equals("on")){
+            userIdCookie.setMaxAge(60 * 60 * 24 * 30);
+        } else {
+            userIdCookie.setMaxAge(0);
+        }
         res.addCookie(userIdCookie);
 
         return "redirect:/";
