@@ -13,7 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-//@SessionAttributes({"loginUser"})
+//@SessionAttributes({"loginUser"}) SessionUtil SessionAttributes 동시에 유저 정보 저장
 @Controller
 public class MemberController {
 
@@ -45,7 +45,7 @@ public class MemberController {
     @PostMapping("/login")
     public String login(@RequestParam String memberEmail,
                         @RequestParam String memberPassword,
-                        @RequestParam(required = false) String saveIdCheck, // 필수로 전달하지 않아도 되는 매개변수
+                        @RequestParam(required = false) String saveId, // 필수로 전달하지 않아도 되는 매개변수
                         HttpSession session,
                         HttpServletResponse res,
                         Model model,
@@ -55,14 +55,29 @@ public class MemberController {
             ra.addFlashAttribute("error", "이메일 또는 비밀번호가 일치하지 않습니다.");
             return "redirect:/login";
         }
+
+        model.addAttribute("loginUser", member);
         SessionUtil.setLoginUser(session, member);
-
         // 쿠키에 사용자 정보 저장 (보안상 민감하지 않은 부분만 저장)
-
         Cookie userIdCookie = new Cookie("saveId", memberEmail);
         userIdCookie.setPath("/");
+        // userIdCookie != null &&
+        /* 문자열1.equals(문자열2)
+        String  내부에 작성되어 있는 메서드 .equals() 는
+        맨 앞에 있는 문자열1이 문자열이면 일 때 를 기준으로 만들어진 메서드
 
-        if (userIdCookie != null && saveIdCheck.equals("on")){
+        문자열.equals(null) 일 때는 false 를 반환하여 에러를 일으키지 않도록 되어 있음
+
+         saveId 가 null 값으로 전달될 경우에는
+         null.equals("문자열") 일 때는 대비해놓은 코드가 없음
+
+        saveId 에서 체크된 값으로 전달될 경우에는
+        "on".equals("on") 형태로 전달되어 true 값을 반환하도록 기능 내부적으로 설정
+
+         * if (saveId.equals("on")){
+         * if ("on".equals(saveId)){
+         */
+        if ("on".equals(saveId)){
             userIdCookie.setMaxAge(60 * 60 * 24 * 30);
         } else {
             userIdCookie.setMaxAge(0);
