@@ -13,28 +13,12 @@
     -->
     <property resource="config.properties" />
 
-    <property name="logPath"		value="${log.config.path}" /> <!-- config.properties에서 얻어온 값-->
-    <property name="fileName"		value="${log.config.fileName}" />  <!-- config.properties에서 얻어온 값-->
+    <property name="logPath"		value="${log.config.path}" />
+    <property name="fileName"		value="${log.config.fileName}" />
     <property name="maxHistory"		value="30" />
     <property name="maxFileSize"	value="10MB" />
 
-    <!--
-    ============================= Spring Boot 로그 기본 설정 =============================
-    conversionRule = 로그를 출력할 때 커스텀 규칙 정의
-        clr 색상
-        wex 예외 추적 스택           단순히 예쁘게 보여주기
-        wEx 예외 추적 스택 확장 버전 어떤JAR 파일과 버전에서 발생한 오류인지 자세히 보여주기
-            wex 하는 모든 것을 포함한 상태에서
-            해당 클래스가 어떤 JAR 파일에서 로드되었는지, 그 JAR 버전은 무엇인지 같은 패키징 정보를 함께 출력
 
-     property       = 콘솔에 로그를 작성할 때 형식을 정의
-        예 ) [시간] [레벨] [프로세스ID] [쓰레드명] [클래스명] : [메세지]
-     appender       = 로그를 어디에 보낼지 결정하는 목적지
-        console 이라는 이름의 Appender 를 만들고, ConsoleAppender 콘솔로 지정
-
-     logger         = Tomcat, Hibernate  등 내부 라이브러리들이 엄청나게 많은 INFO 로그를 찍음
-     너무 시끄러운 특정 라이브러리들의 로그 레벨을 WARN 이나 ERROR로 올려서, 불필요한 로그가 콘솔을 도배하는 것을 막아줌
-    -->
     <conversionRule conversionWord="clr" converterClass="org.springframework.boot.logging.logback.ColorConverter" />
     <conversionRule conversionWord="wex" converterClass="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter" />
     <conversionRule conversionWord="wEx" converterClass="org.springframework.boot.logging.logback.ExtendedWhitespaceThrowableProxyConverter" />
