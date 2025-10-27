@@ -29,6 +29,7 @@ async  function fetchBoardData(){
                 const row = document.createElement("tr");
 
                 row.innerHTML=`
+<td>${b.id}</td>
                 <td class="title-cell" onclick="openModal(${b.id})">${b.title}</td>
                 <td>${b.writer}</td>
                 
@@ -41,5 +42,30 @@ async  function fetchBoardData(){
 
 
 }
+
+// 게시글 상세보기 (모달열기)
+async function openModal(id) {
+    const modal = document.getElementById("viewModal");
+    const modalTitle = document.getElementById("modalTitle");
+    const modalInfo = document.getElementById("modalInfo");
+    const modalContent = document.getElementById("modalContent");
+
+
+    modal.style.display ="flex";
+
+    const res = await  fetch(API_BASE_URL + `/board/${id}`);
+
+    const board = await  res.json();
+
+    modalTitle.textContent = board.title;
+    modalInfo.textContent = `작성자 ${board.writer}`;
+    modalContent.textContent = board.content;
+}
+
+function  closeModal(){
+    const modal = document.getElementById("viewModal");
+    modal.style.display = "none";
+}
+
 // 페이지 로드 시 자동으로 특정 기능 실행
 window.addEventListener("DOMContentLoaded", fetchBoardData);
