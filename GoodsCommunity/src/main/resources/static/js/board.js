@@ -69,9 +69,17 @@ async  function fetchBoardDetail(){
     }
 
     const b = await  detailFunction(boardId);
-
+    console.log("DB 데이터 조회 : ", b);
     const title = document.querySelector(".board-title");
+    const writer = document.querySelector(".board-writer");
+    const date = document.querySelector(".board-date");
+    const views = document.querySelector(".board-views");
+    const content = document.querySelector(".board-content");
     title.textContent = b.title;
+    writer.textContent = b.writer;
+    date.textContent = b.createdAt;
+    views.textContent = b.viewCount;
+    content.textContent = b.content;
 }
 
 
@@ -118,6 +126,9 @@ window.addEventListener("DOMContentLoaded", () => {
     }
 });
 
+const listBtn = document.querySelector(".btn-list");
+listBtn.addEventListener("click", gotoList);
+
 
 // 상세페이지 이동 버튼 기능
 function  gotoDetail(id) {
@@ -127,7 +138,3 @@ function  gotoDetail(id) {
 function  gotoList() {
     window.location.href = `/board`;
 }
-
-// 모달열기로 해놓은 상세보기를
-// detailFunction 으로 기능 분리 후
-// 이 기능을 모달열기와 상세보기페이지에서 사용할 수 있도록 변경
