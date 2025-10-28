@@ -32,4 +32,5 @@ public class MainController {
     public String pageBoardDetail(@RequestParam int id){
         return "pages/board/boardDetail.html";
     }
+
 }

@@ -46,14 +46,16 @@ public class TestScheduling {
     // ? : 특별한 값 없이(월/요일만 가능)
     // L : 마지막 (월/요일만 가능)
 
-    //@Scheduled(fixedRate = 5000) // ms 단위 5000 = 5초
-    //@Scheduled(fixedDelay = 1000)
-    // cron = "초 분 시 일 월 요일 [년도]"
-    // @Scheduled(cron ="0 * * * * *") // 매 0초마다 수행 (1분마다 수행)
-    // @Scheduled(cron ="0 1 * * * *") // 1분마다 수행
-    // @Scheduled(cron ="0/10 * * * * *") // 0초부터 10초마다 마다 수행
-    //@Scheduled(cron ="0 0 0 * * *") // 매일 자정마다 수행
-    //@Scheduled(cron ="59 59 23 * * *") // 다음 날 되기 1초 전
+    /**
+     * @Scheduled(fixedRate = 5000) // ms 단위 5000 = 5초
+     * @Scheduled(fixedDelay = 1000)
+     * cron = "초 분 시 일 월 요일 [년도]"
+     * @Scheduled(cron ="0 * * * * *") // 매 0초마다 수행 (1분마다 수행)
+     * @Scheduled(cron ="0 1 * * * *") // 1분마다 수행
+     * @Scheduled(cron ="0/10 * * * * *") // 0초부터 10초마다 마다 수행
+     * @Scheduled(cron ="0 0 0 * * *") // 매일 자정마다 수행
+     * @Scheduled(cron ="59 59 23 * * *") // 다음 날 되기 1초 전
+     */
     public void testMethod(){
         log.info("0초 스케쥴러 테스트 중입니다....");
     }
