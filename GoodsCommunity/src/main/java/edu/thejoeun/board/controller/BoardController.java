@@ -41,14 +41,13 @@ public class BoardController {
     public List<Board> getPopularBoards(){
         return schedulingService.getPopularBoards();
     }
-    /*
-    인기글을 23시 59분까지 기다리지 않고, 개발자가
-    인기글업데이트가 무사히 잘 되는지 확인하는 방법 1탄
-        @PostMapping("/popular/update")
-        public int 인기글수동업데이트기능(){
-            log.info("현재 23시 59분이 아니므로 인기글 수동으로 업데이트해서 확인");
-            int result = schedulingService.updatePopularBoards();
-            return result;
-        }
-    */
+
+    @PostMapping  // api endpoint = /api/board 맨 위에 작성한 requestMapping 해당
+    public void createBoard(@RequestBody Board board){
+        boardService.createBoard(board);
+    }
+
 }
+
+
+

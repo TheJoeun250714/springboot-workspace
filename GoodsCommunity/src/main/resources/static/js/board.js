@@ -47,22 +47,19 @@ async  function fetchBoardData(){
 
 }
 
-// 게시글 상세보기 를 호출하는 기능
 async  function detailFunction(id){
     const res = await  fetch(API_BASE_URL + `/board/${id}`);
 
     if(!res.ok) {
         throw new Error("게시글을 불러오는데 실패했습니다.");
     }
-  return  await res.json(); // detailFunction 을 이용하면 백엔드에서 호출한 데이터가 반환
+  return  await res.json();
 }
 
-// 상세보기 페이지에서 실행할 기능
 async  function fetchBoardDetail(){
     const urlParams = new URLSearchParams(window.location.search);
     const boardId = urlParams.get("id");
 
-    // 클라이언트가 DB에 존재하지 않는 id를 작성할 때 게시물 메인으로 돌려보내기
     if(!boardId) { 
         alert("잘못된 게시글 번호입니다.");
         window.location.href = "/board";

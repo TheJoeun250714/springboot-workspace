@@ -14,11 +14,11 @@
             업데이트 시간: 로딩 중...
         </div>
         <div class="popular-board-list" id="popularBoardList">
-            <!-- 인기글 목록이 추가됩니다 -->
+
         </div>
     </div>
 <script>
-    // 인기글 목록 로드
+
     function loadPopularBoards() {
         fetch('/api/board/popular')
             .then(response => {
@@ -37,12 +37,11 @@
             });
     }
 
-    // 인기글 화면에 표시
+
     function displayPopularBoards(boards) {
         const listContainer = document.getElementById('popularBoardList');
         const updateTimeElement = document.getElementById('updateTime');
 
-        // 업데이트 시간 설정
         if (boards.length > 0 && boards[0].popularUpdatedAt) {
             const updateTime = new Date(boards[0].popularUpdatedAt);
             updateTimeElement.textContent = `업데이트 시간: ${formatDateTime(updateTime)}`;
@@ -50,14 +49,12 @@
             updateTimeElement.textContent = '업데이트 시간: 정보 없음';
         }
 
-        // 인기글이 없는 경우
         if (!boards || boards.length === 0) {
             listContainer.innerHTML =
                 '<p style="color: #666; text-align: center;">등록된 인기글이 없습니다.</p>';
             return;
         }
 
-        // 인기글 목록 생성
         listContainer.innerHTML = boards.map((board, index) => `
                 <div class="popular-board-item" onclick="goToBoard(${board.id})">
                     <div class="popular-rank ${index < 3 ? 'top3' : ''}">${index + 1}</div>
