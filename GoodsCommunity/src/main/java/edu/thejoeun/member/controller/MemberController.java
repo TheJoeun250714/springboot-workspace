@@ -18,9 +18,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Controller
 @Slf4j // log를 출력하게 해주는 어노테이션
 public class MemberController {
-
+/*
     @Autowired
     MemberServiceImpl memberService;
+
+ */
 /*
 Caused by: java.lang.IllegalStateException: Ambiguous mapping. Cannot map 'memberController' method
 edu.thejoeun.member.controller.MemberController#pageMain()
@@ -35,6 +37,7 @@ edu.thejoeun.main.controller.MainController#pageMain() mapped
 */
     //쿠키 설정할 때 아이디 저장 안되면 가장먼저하는 작업
     // @CookieView 와 Model 은 필요 없음!!!
+    /*
     @GetMapping("/login")
     public String pageLogin(
     ){
@@ -83,7 +86,7 @@ edu.thejoeun.main.controller.MainController#pageMain() mapped
 
          * if (saveId.equals("on")){
          * if ("on".equals(saveId)){
-         */
+         * /
         if ("on".equals(saveId)){
             userIdCookie.setMaxAge(60 * 60 * 24 * 30); // 쿠키 30일단위 추가
         } else {
@@ -107,7 +110,9 @@ edu.thejoeun.main.controller.MainController#pageMain() mapped
         userIdCookie.setPath("/");
         res.addCookie(userIdCookie);
 
-         */
+         * /
         return "redirect:/"; //로그아웃 선택시 모든 쿠키 데이터 지우고 메인으로 돌려보내기
     }
+
+     */
 }
