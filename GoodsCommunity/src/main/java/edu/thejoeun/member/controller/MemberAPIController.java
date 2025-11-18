@@ -46,6 +46,20 @@ public class MemberAPIController {
     // PostMapping 만들기
     // mapper.xml -> mapper.java -> service.java -> serviceImpl.java apiController.java
     // 완성
+
+    @PostMapping("/signup")
+    public void saveSignup(@RequestBody Member member){
+      log.info("===회원가입 요청===");
+      log.info("요청 데이터 - 이름 : {}, 이메일 : {}",member.getMemberName(),member.getMemberEmail());
+
+      try {
+          memberService.saveMember(member);
+          log.info("회원가입 성공 - 이메일 : {}",member.getMemberEmail());
+      } catch (Exception e){
+          log.error("회원가입 실패 - 이메일 : {}, 에러 : {}",member.getMemberEmail(),e.getMessage());
+        }
+
+    }
 }
 
 
