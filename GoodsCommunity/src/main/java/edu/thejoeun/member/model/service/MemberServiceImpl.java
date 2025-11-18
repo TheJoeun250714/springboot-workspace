@@ -28,7 +28,6 @@ public class MemberServiceImpl  implements MemberService {
         if(member == null) {
             return null;
         }
-
        if(!bCryptPasswordEncoder.matches(memberPassword, member.getMemberPassword())) {
             return null;
         }
@@ -36,28 +35,25 @@ public class MemberServiceImpl  implements MemberService {
             return member;
         }
 
-        public Map<String, Object> loginProcess(String memberEmail, String memberPassword, HttpSession session) {
-        Map<String, Object> res = new HashMap<>();
+    @Override
+    public void saveMember(Member member) {
+        // 비밀번호 암호화해서 저장
+        memberMapper.saveMember(member);
+    }
 
-        // 1. 로그인 검증
+    public Map<String, Object> loginProcess(String memberEmail, String memberPassword, HttpSession session) {
+            Map<String, Object> res = new HashMap<>();
             Member m = login(memberEmail,memberPassword);
-
-            // 2. 로그인 실패
             if(m == null) {
                 res.put("success",false);
                 res.put("message","이메일 또는 비밀번호가 일치하지 않습니다.");
                 log.warn("로그인 실패: {}", memberEmail);
                 return  res;
             }
-
-            // 3. 세션에 사용자 정보 저장
             SessionUtil.setLoginUser(session, m);
-
-            // 4. 성공 응답 생성
             res.put("success",true);
             res.put("message","로그인 성공");
             res.put("user",m);
-
             log.info("로그인 성공 : {}",m.getMemberEmail());
         return res;
         }
@@ -85,10 +81,11 @@ public class MemberServiceImpl  implements MemberService {
             Map<String, Object> res = new HashMap<>();
             Member loginUser = (Member) session.getAttribute("loginUser");
 
-            if(loginUser == null) {
-                res.put("success",false);
-                res.put("로그인 상태 확인 : {}", loginUser.getMemberEmail());
-            } else {
+        if(loginUser == null) {
+            res.put("loggedIn", false);
+            res.put("user", null);
+            log.debug("로그인 상태 확인: 로그인되지 않음");
+        }else {
                 res.put("loggedIn", true);
                 res.put("user",loginUser);
                 log.debug("로그인 상태 확인 : {}", loginUser.getMemberEmail());

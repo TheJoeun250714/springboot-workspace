@@ -26,13 +26,9 @@ public class MemberAPIController {
     @PostMapping("/login")
     public Map<String, Object> login(
             @RequestBody Map<String, String> loginData, HttpSession session){
-
-
         String memberEmail = loginData.get("memberEmail");
         String memberPassword = loginData.get("memberPassword");
-
         Map<String, Object> res = memberService.loginProcess(memberEmail, memberPassword,session);
-
         return res;
     }
 
@@ -41,14 +37,15 @@ public class MemberAPIController {
         return  memberService.logoutProcess(session);
     }
 
-    /**
-     * 로그인 상태 확인 API
-     * React 앱이 시작될 때 호출
-     * @param session
-     * @return 로그인 상태 반환
-     */
     @GetMapping("/check")
     public Map<String, Object> checkLoginStatus(HttpSession session){
         return memberService.checkLoginStatus(session);
     }
+
+    // const res = axios.post("/api/auth/signup",signupData);
+    // PostMapping 만들기
+    // mapper.xml -> mapper.java -> service.java -> serviceImpl.java apiController.java
+    // 완성
 }
+
+
