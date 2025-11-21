@@ -73,10 +73,14 @@
     </update>
     <!-- 상품삭제( 진짜 삭제하는 것이 아니라 비활성화로 상태 변경-->
     <update id="deleteProduct" parameterType="Product">
-
+        UPDATE  product
+        SET is_active = FALSE
+        WHERE id = #{id}
     </update>
     <!-- 상품재고 수정 판매완료되거나, 반품처리일 때 조회수 감소 / 증가 -->
     <update id="updateStock" parameterType="Product">
-
+        update product
+        SET stock_quantity = #{stockQuantity}
+        WHERE id = #{id}
     </update>
 </mapper>
