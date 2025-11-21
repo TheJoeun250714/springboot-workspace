@@ -168,15 +168,16 @@ public class ProductServiceImpl implements ProductService {
         // 상품재고가 음수가 될 수 없도록 설정
         int newStock = existingProduct.getStockQuantity() + quantity;
         if(newStock < 0) {
-            log.warn("재고는 음수가 될 수 없습니다. Current : {}, Change : {}", existingProduct.getStockQuantity(), quantity);
+            log.warn("재고는 음수가 될 수 없습니다. Current : {}, Change : {}",
+                    existingProduct.getStockQuantity(), quantity);
         }
 
-        int result = productMapper.deleteProduct(id);
+        int result = productMapper.updateStock(id,quantity);
         if(result > 0) {
-            log.info("상품 삭제 완료 - ID : {}",id);
+            log.info("재고 업데이트 완료 - ID : {}, new Stock : {}",id,quantity);
         } else {
-            log.error("상품 삭제 실패 ID : {}",id);
-            throw  new RuntimeException("상품 삭제에 실패했습니다.");
+            log.error("재고 업데이트 실패  - ID : {}", id);
+            throw  new RuntimeException("재고 업데이트에 실패했습니다.");
         }
     }
 }
