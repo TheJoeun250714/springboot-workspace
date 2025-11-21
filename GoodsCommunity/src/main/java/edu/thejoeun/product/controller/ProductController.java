@@ -142,9 +142,9 @@ public class ProductController {
     }
 
     /**
-     *
-     * @param id
-     * @return
+     * 상품 삭제
+     * @param id id 에 해당하는 상품 삭제 관련 기능 수행
+     * @return   수행결과를 반환
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Map<String, Object>> deleteProduct(@PathVariable int id) {
@@ -175,9 +175,10 @@ public class ProductController {
     }
 
     /**
-     *
-     * @param id
-     * @return
+     * 재고 업데이트
+     * @param id                재고 업데이트할 상품 id 조회
+     * @RequestParam  quantity  프론트엔드에서 재고 업데이트 관련 수량 변경 요청
+     * @return                  요청 결과를 반환
      */
     @PatchMapping("/{id}/stock")
     public ResponseEntity<Map<String, Object>> updateStock(@PathVariable int id, @RequestParam int quantity) {
