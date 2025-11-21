@@ -113,7 +113,7 @@ public class ProductServiceImpl implements ProductService {
 
         // 상품이 존재하는지 확인
         Product existingProduct = productMapper.getProductById(product.getId());
-        if(existingProduct != null) {
+        if(existingProduct == null) {
             log.warn("수정할 상품을 찾을 수 없습니다. : {}", product.getId());
             throw new IllegalArgumentException("존재하지 않는 상품입니다.");
         }
@@ -133,12 +133,50 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public void deleteProduct(int id) {
+        log.info("상품 삭제 시작 - {}", id);
 
+        // 상품이 존재하는지 확인
+        Product existingProduct = productMapper.getProductById(id);
+        if(existingProduct == null) {
+            log.warn("삭제할 상품을 찾을 수 없습니다. : {}", id);
+            throw new IllegalArgumentException("존재하지 않는 상품입니다.");
+        }
+        // 유효성 검사
+        // void validateProduct(product);
+        // 메서드를 만들어, 데이터를 저장하기 전에 백엔드에서 한 번 더 유효성 검사 진행
+
+        int result = productMapper.deleteProduct(id);
+        if(result > 0) {
+            log.info("상품 삭제 완료 - ID : {}",id);
+        } else {
+            log.error("상품 삭제 실패 ID : {}",id);
+            throw  new RuntimeException("상품 삭제에 실패했습니다.");
+        }
     }
 
     @Override
     @Transactional
     public void updateStock(int id, int quantity) {
+        log.info("재고 업데이트 -ID : {}, Quantity : {}", id, quantity);
 
+        // 상품이 존재하는지 확인
+        Product existingProduct = productMapper.getProductById(id);
+        if(existingProduct == null) {
+            log.warn("상품을 찾을 수 없습니다. : {}", id);
+            throw new IllegalArgumentException("존재하지 않는 상품입니다.");
+        }
+        // 상품재고가 음수가 될 수 없도록 설정
+        int newStock = existingProduct.getStockQuantity() + quantity;
+        if(newStock < 0) {
+            log.warn("재고는 음수가 될 수 없습니다. Current : {}, Change : {}", existingProduct.getStockQuantity(), quantity);
+        }
+
+        int result = productMapper.deleteProduct(id);
+        if(result > 0) {
+            log.info("상품 삭제 완료 - ID : {}",id);
+        } else {
+            log.error("상품 삭제 실패 ID : {}",id);
+            throw  new RuntimeException("상품 삭제에 실패했습니다.");
+        }
     }
 }
