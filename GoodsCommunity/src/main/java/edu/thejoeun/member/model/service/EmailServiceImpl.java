@@ -1,10 +1,8 @@
 package edu.thejoeun.member.model.service;
 
-import edu.thejoeun.member.model.mapper.EmailMapper;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -25,12 +23,11 @@ public class EmailServiceImpl implements EmailService {
      // EmailConfig 에  설정된 메일보내기 기능 과 관련 환경설정 사용
     private final JavaMailSender mailSender;
 
-    private final  EmailMapper emailMapper;
 
     // 템플릿 엔진 이용해서 auth/signup.html 에 있는 html 코드를 java로 변환
     private final SpringTemplateEngine templateEngine;
 
-    Map<String,String> authKeyStorage = new ConcurrentHashMap<>();
+    private final  Map<String,String> authKeyStorage = new ConcurrentHashMap<>();
 
     // 이메일 보내기
     @Override
@@ -64,8 +61,8 @@ public class EmailServiceImpl implements EmailService {
             // 모든 준비가 끝나면 진짜로 메일보내기~!
             mailSender.send(mimeMessage); // 이메일 발송
 
-            authKeyStorage.put(email,authKey);
-            log.info("인증키 저장 - 이메일 : {} ", email);
+            authKeyStorage.put(email, authKey);
+            log.info("인증키 메모리 저장 완료 - 이메일 : {} ", email);
         }catch (Exception e){
             e.printStackTrace();
             return null;
@@ -156,6 +153,12 @@ public class EmailServiceImpl implements EmailService {
         String inputAuthKey = (String) map.get("authKey");
         log.info("인증키 확인 - 이메일 : {}", email);
         String storedAuthKey = authKeyStorage.get(email);
+
+
+        if(storedAuthKey == null ) {
+            log.warn("저장된 인증키 없음 - 이메일 : {}", email);
+            return  0;
+        }
         if(storedAuthKey != null && storedAuthKey.equals(inputAuthKey)){
             log.info("인증 성공");
             authKeyStorage.remove(email); //인증 후 삭제
