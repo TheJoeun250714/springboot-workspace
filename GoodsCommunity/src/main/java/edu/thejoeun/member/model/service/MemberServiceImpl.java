@@ -16,7 +16,7 @@ import java.util.Map;
 
 @Slf4j
 @Service
-public class MemberServiceImpl  implements MemberService {
+public class MemberServiceImpl implements MemberService {
     @Autowired
     private MemberMapper memberMapper;
 
@@ -25,15 +25,15 @@ public class MemberServiceImpl  implements MemberService {
     @Override
     public Member login(String memberEmail, String memberPassword) {
         Member member = memberMapper.getMemberByEmail(memberEmail);
-        if(member == null) {
+        if (member == null) {
             return null;
         }
-       if(!bCryptPasswordEncoder.matches(memberPassword, member.getMemberPassword())) {
+        if (!bCryptPasswordEncoder.matches(memberPassword, member.getMemberPassword())) {
             return null;
         }
         member.setMemberPassword(null);
-            return member;
-        }
+        return member;
+    }
 
     @Override
     public void saveMember(Member member) {
@@ -46,55 +46,110 @@ public class MemberServiceImpl  implements MemberService {
         memberMapper.saveMember(member);
     }
 
-    public Map<String, Object> loginProcess(String memberEmail, String memberPassword, HttpSession session) {
-            Map<String, Object> res = new HashMap<>();
-            Member m = login(memberEmail,memberPassword);
-            if(m == null) {
-                res.put("success",false);
-                res.put("message","이메일 또는 비밀번호가 일치하지 않습니다.");
-                log.warn("로그인 실패: {}", memberEmail);
-                return  res;
+    @Override
+    public Map<String, Object> updateMember(Member member, String currentPassword, HttpSession session) {
+        Map<String, Object> res = new HashMap<>();
+        try {
+            // 현재 로그인된 사용자 정보 가져오기
+            Member loginUser = SessionUtil.getLoginUser(session);
+            if(loginUser==null){
+                res.put("success", false);
+                res.put("message","로그인이 필요합니다.");
+                return res;
             }
-            SessionUtil.setLoginUser(session, m);
+            // DB 에서 최신 정보 가져오기
+            Member m  = memberMapper.getMemberByEmail(member.getMemberEmail());
+            // id where 조건으로 / 현재 비밀번호와 비밀번호 변경할 때 작성한 현재 비밀번호가 일치하는지 확인
+            // 비밀번호 변경하는 경우
+            if(currentPassword != null && !currentPassword.isEmpty()) {
+                // 현재 비밀번호와 DB에 저장된 비밀번호가 일치하는지 확인
+                if(!bCryptPasswordEncoder.matches(currentPassword, m.getMemberPassword())){
+                    res.put("success", false);
+                    res.put("message","wrongPassword");
+                    log.warn("비밀번호 불일치 - 이메일 : {}", loginUser.getMemberEmail());
+                    return res;
+                }
+
+                // 새 비밀번호 암호화 처리해서 저장할 수 있도록 로직 작성
+                if(member.getMemberPassword() != null && !member.getMemberPassword().isEmpty()) {
+                    String encodePw = bCryptPasswordEncoder.encode(member.getMemberPassword());
+                    member.setMemberPassword(encodePw);
+                }
+
+            }else {
+                // 비밀번호 변경하지 않은 경우 기존 비밀번호 유지
+                member.setMemberPassword(m.getMemberPassword());
+            }
+            member.setMemberId(m.getMemberId());
+            memberMapper.updateMember(member);
+            // 수정된 db 내역으로 session 업데이트
+            Member updateMember = memberMapper.getMemberByEmail(member.getMemberEmail());
+            updateMember.setMemberPassword(null);
+            SessionUtil.setLoginUser(session, updateMember);
+
             res.put("success",true);
-            res.put("message","로그인 성공");
-            res.put("user",m);
-            log.info("로그인 성공 : {}",m.getMemberEmail());
-        return res;
+            res.put("message","success");
+            log.info("회원정보 수정 성공 - 이메일 : {}", loginUser.getMemberEmail());
+
+        }catch (Exception e){
+            res.put("success",false);
+            res.put("message","회원정보 수정 중 오류가 발생했습니다.");
+            log.error("회원정보 수정 실패 - 에러 {}", e.getMessage());
         }
+        return res;
+    }
+
+    public Map<String, Object> loginProcess(String memberEmail, String memberPassword, HttpSession session) {
+        Map<String, Object> res = new HashMap<>();
+        Member m = login(memberEmail, memberPassword);
+        if (m == null) {
+            res.put("success", false);
+            res.put("message", "이메일 또는 비밀번호가 일치하지 않습니다.");
+            log.warn("로그인 실패: {}", memberEmail);
+            return res;
+        }
+        SessionUtil.setLoginUser(session, m);
+        res.put("success", true);
+        res.put("message", "로그인 성공");
+        res.put("user", m);
+        log.info("로그인 성공 : {}", m.getMemberEmail());
+        return res;
+    }
 
     /**
      * 로그아웃 처리
-     * @param  session 로그인된 세션 정보 가져와서 로그아웃 처리 후
+     *
+     * @param session 로그인된 세션 정보 가져와서 로그아웃 처리 후
      * @return 처리결과 반환
      */
-    public  Map<String, Object> logoutProcess(HttpSession session) {
+    public Map<String, Object> logoutProcess(HttpSession session) {
         Map<String, Object> res = new HashMap<>();
         SessionUtil.invalidateLoginUser(session);
-        res.put("success",true);
-        res.put("message","로그아웃 성공");
+        res.put("success", true);
+        res.put("message", "로그아웃 성공");
 
         return res;
-        }
+    }
 
     /**
      * 로그인 상태확인
+     *
      * @param session 현재 세션을 가져온 후
      * @return 로그인 이 되어있으면 로그인이 되어있는 상태로 반환
      */
     public Map<String, Object> checkLoginStatus(HttpSession session) {
-            Map<String, Object> res = new HashMap<>();
-            Member loginUser = (Member) session.getAttribute("loginUser");
+        Map<String, Object> res = new HashMap<>();
+        Member loginUser = (Member) session.getAttribute("loginUser");
 
-        if(loginUser == null) {
+        if (loginUser == null) {
             res.put("loggedIn", false);
             res.put("user", null);
             log.debug("로그인 상태 확인: 로그인되지 않음");
-        }else {
-                res.put("loggedIn", true);
-                res.put("user",loginUser);
-                log.debug("로그인 상태 확인 : {}", loginUser.getMemberEmail());
-            }
-            return  res;
+        } else {
+            res.put("loggedIn", true);
+            res.put("user", loginUser);
+            log.debug("로그인 상태 확인 : {}", loginUser.getMemberEmail());
         }
+        return res;
     }
+}
