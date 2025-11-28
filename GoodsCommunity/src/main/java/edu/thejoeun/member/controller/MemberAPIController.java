@@ -1,5 +1,6 @@
 package edu.thejoeun.member.controller;
 
+import edu.thejoeun.common.util.FileUploadService;
 import edu.thejoeun.common.util.SessionUtil;
 import edu.thejoeun.member.model.dto.Member;
 import edu.thejoeun.member.model.service.MemberServiceImpl;
@@ -22,7 +23,8 @@ import java.util.Map;
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class MemberAPIController {
-     private  final MemberServiceImpl memberService;
+     private final MemberServiceImpl memberService;
+     private final FileUploadService fileUploadService;
 
     @PostMapping("/login")
     public Map<String, Object> login(
@@ -92,6 +94,9 @@ public class MemberAPIController {
             res.put("message","회원정보 수정 중 오류가 발생했습니다.");
             return res;
         }
+    }
+
+    public void uploadProfileImage(){
 
     }
 }
