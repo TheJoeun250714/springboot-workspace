@@ -41,6 +41,6 @@
         UPDATE member
         SET
             member_profile_image = #{memberProfileImage}
-        WHERE member_email = #{member_email}
+        WHERE member_email = #{memberEmail}
     </update>
 </mapper>
