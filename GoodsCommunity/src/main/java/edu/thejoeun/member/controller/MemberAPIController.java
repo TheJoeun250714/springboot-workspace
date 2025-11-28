@@ -69,6 +69,17 @@ public class MemberAPIController {
 
     }
 
+
+    /**
+     * 상품 이미지 업로드를 프로필 사진 업로드처럼 product-images 폴더에 업데이트 되도록 설정
+     * -> 이미지 업로드 한 데이터 가져오고 가져가는 서버 - 웹 페이지 작업
+     *
+     * // fetchMypageEditWithProfile(axios, formData, profileFile,navigate, setIsSubmitting);
+     * 받기위한 매개변수 수정 일어날 것
+     * @param updateData
+     * @param session
+     * @return
+     */
     @PostMapping("/update")
     public Map<String, Object> updateMypage(@RequestBody Map<String, Object> updateData, HttpSession session){
         log.info("회원정보 수정 요청");
@@ -115,13 +126,7 @@ public class MemberAPIController {
             res.put("message","프로필 이미지가 업데이트 되었습니다.");
             res.put("imageUrl",imageUrl);
             log.info("프로필 이미지 업로드 성공 - 이메일:{}, 파일명:{}", memberEmail, file.getOriginalFilename());
-            return ResponseEntity.ok(res); // 업데이트가 무사히 되면 200 만 전달
-            // 개발자가 만든 exception 은 최 상위 작성
-            // 자바에서 기본으로 제공하는 exception은
-            // 최 상위가 아닌 순부터 작성
-            // exception의 부모인 Exception은 맨 마지막에 작성
-            // 부모 Exception은 까지 올 때는
-            // 어떤 문제인지 파악을 회사에서 못한 상태
+            return ResponseEntity.ok(res);
         } catch (UnauthorizedException e) {
                 res.put("success",false);
                 res.put("message",e.getMessage());
@@ -142,7 +147,6 @@ public class MemberAPIController {
             res.put("success",false);
             res.put("message","서버 오류가 발생했습니다.");
             return ResponseEntity.status(500).body(res);
-            // 500 error - 백엔드 에러
         }
 
     }

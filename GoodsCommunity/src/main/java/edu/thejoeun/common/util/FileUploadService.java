@@ -73,7 +73,7 @@ public class FileUploadService {
             throw new IOException("파일 저장에 실패했습니다. : " + e.getMessage());
         }
         // DB 에서 저장할 상대 경로 반환 (웹에서 접근 가능한 경로)
-        return "/profile_images/"+하나_밖에_없는_파일이름;
+        return "/profile_images /"+하나_밖에_없는_파일이름;
     }
 
 }
