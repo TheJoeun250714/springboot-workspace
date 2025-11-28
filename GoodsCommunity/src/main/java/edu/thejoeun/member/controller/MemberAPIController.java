@@ -1,5 +1,7 @@
 package edu.thejoeun.member.controller;
 
+import edu.thejoeun.common.exception.ForbiddenException;
+import edu.thejoeun.common.exception.UnauthorizedException;
 import edu.thejoeun.common.util.FileUploadService;
 import edu.thejoeun.common.util.SessionUtil;
 import edu.thejoeun.member.model.dto.Member;
@@ -105,8 +107,6 @@ public class MemberAPIController {
             @RequestParam("memberEmail") String memberEmail, HttpSession session ){
 
         Map<String, Object> res = new HashMap<>();
-
-
         try{
             Member loginUser = SessionUtil.getLoginUser(session);
             String imageUrl = memberService.updateProfileImage(loginUser,memberEmail,file,session);
@@ -116,14 +116,18 @@ public class MemberAPIController {
             res.put("imageUrl",imageUrl);
             log.info("프로필 이미지 업로드 성공 - 이메일:{}, 파일명:{}", memberEmail, file.getOriginalFilename());
             return ResponseEntity.ok(res); // 업데이트가 무사히 되면 200 만 전달
-
-
-        } catch (IllegalStateException e) {
+            // 개발자가 만든 exception 은 최 상위 작성
+            // 자바에서 기본으로 제공하는 exception은
+            // 최 상위가 아닌 순부터 작성
+            // exception의 부모인 Exception은 맨 마지막에 작성
+            // 부모 Exception은 까지 올 때는
+            // 어떤 문제인지 파악을 회사에서 못한 상태
+        } catch (UnauthorizedException e) {
                 res.put("success",false);
                 res.put("message",e.getMessage());
                 return ResponseEntity.status(401).body(res);
 
-        } catch (SecurityException e) {
+        } catch (ForbiddenException e) {
             res.put("success",false);
             res.put("message",e.getMessage());
             return ResponseEntity.status(403).body(res);

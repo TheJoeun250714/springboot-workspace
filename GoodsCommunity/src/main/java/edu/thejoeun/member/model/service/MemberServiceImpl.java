@@ -1,7 +1,7 @@
 package edu.thejoeun.member.model.service;
 
 
-import edu.thejoeun.common.exception.ForbiddenExcpetion;
+import edu.thejoeun.common.exception.ForbiddenException;
 import edu.thejoeun.common.exception.UnauthorizedException;
 import edu.thejoeun.common.util.FileUploadService;
 import edu.thejoeun.common.util.SessionUtil;
@@ -164,17 +164,19 @@ public class MemberServiceImpl implements MemberService {
         return res;
     }
 
+    // 클라이언트측에서 발생하는 문제를 이중으로 보안하기도 하고,
+    // 개발 해커 블랙클라이언트로부터 회사 서비스를 보호하기 위한 예외 차단 처리
     @Transactional
     @Override
     public String updateProfileImage(Member loginUser, String memberEmail, MultipartFile file, HttpSession session) throws IOException {
-
+        // UnauthorizedException = IllegalStateException
         if (loginUser == null) {
             throw new UnauthorizedException("로그인이 필요합니다.");
         }
-
+        //  ForbiddenException  =  SecurityException
         // 본인 확인
         if (!loginUser.getMemberEmail().equals(memberEmail)) {
-            throw new ForbiddenExcpetion("본인의 프로필만 수정할 수 있습니다.");
+            throw new ForbiddenException("본인의 프로필만 수정할 수 있습니다.");
         }
 
         // 파일 유효성 검증

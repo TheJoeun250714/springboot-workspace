@@ -18,6 +18,6 @@ public interface MemberService {
 
     Map<String, Object> updateMember(Member member, String currentPassword, HttpSession session);
 
-    String updateProfileImage(Member loginUser, String memberEmail, MultipartFile file, HttpSession session);
+    String updateProfileImage(Member loginUser, String memberEmail, MultipartFile file, HttpSession session) throws IOException;
 
 }
