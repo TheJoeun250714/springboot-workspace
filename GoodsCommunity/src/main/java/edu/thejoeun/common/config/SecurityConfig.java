@@ -38,7 +38,8 @@ public class SecurityConfig {
                  * 모든 프로젝트를 마무리하고 배포작업을 진행하기 전에는
                  * 커스텀 URL 접근 설정을 진행해야한다.
                  */
-                .authorizeHttpRequests( auth -> auth
+                .authorizeHttpRequests(
+                        auth -> auth
                         .anyRequest().permitAll())
 
                 /**
@@ -59,6 +60,16 @@ public class SecurityConfig {
                 )
                 */
                 .formLogin(AbstractHttpConfigurer::disable)
+
+                // HTTP Basic 인증 비활성화
+                .httpBasic(basic -> basic.disable())
+
+                // 세션 관리 설정 추가
+                .sessionManagement(session -> session
+                        .maximumSessions(1) // 동시 세션 1개만 허용
+                        .maxSessionsPreventsLogin(false) // 새 로그인 시 기존 세선 무효화
+                )
+
                 .logout(logout -> logout
                         .logoutUrl("/api/auth/logout")
                         .permitAll()
