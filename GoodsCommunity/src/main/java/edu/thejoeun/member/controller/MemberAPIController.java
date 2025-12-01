@@ -100,6 +100,9 @@ public class MemberAPIController {
             m.setMemberEmail(updateData.get("memberEmail").toString());
             m.setMemberName(updateData.get("memberName").toString());
             m.setMemberAddress(updateData.get("memberAddress").toString());
+           // m.setMemberPostCode(updateData.get("memberPostCode").toString());
+           // m.setMemberDetailAddress(updateData.get("memberDetailAddress").toString());
+            m.setMemberAddress(updateData.get("memberAddress").toString());
 
             // 새 비밀번호가 있는 경우
             String newPassword = (String) updateData.get("memberPassword");
