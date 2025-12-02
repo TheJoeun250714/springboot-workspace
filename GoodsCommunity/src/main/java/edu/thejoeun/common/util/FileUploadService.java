@@ -7,6 +7,7 @@ package edu.thejoeun.common.util;
 //import lombok.Value;  // DB 관련 Value DB 컬럼값
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value; // 스프링부트 properties 에서 사용한 데이터
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,6 +25,9 @@ public class FileUploadService {
     // import org.springframework.beans.factory.annotation.Value;
     @Value("${file.upload.path}")
     private String uploadPath;
+
+    @Value("${file.product.upload.path}")
+    private String productUploadPath;
 
     /**
      * 프로필 이미지 업로드
@@ -75,6 +79,61 @@ public class FileUploadService {
         // DB 에서 저장할 상대 경로 반환 (웹에서 접근 가능한 경로)
         return "/profile_images/"+하나_밖에_없는_파일이름;
     }
+
+    /**
+     * 상품 이미지 메인 이미지 업로드
+     *
+     * @param file         업로드할 상품 이미지 파일
+     * @return             저장된 파일의 경로(DB에 저장할 상대 경로)
+     * @throws IOException 파일 처리 중 오류 발생 시 예외 처리
+     *                      // 가져온 파일 임시저장 폴더 같은 곳에 파일 보관해두기
+     */
+    public String uploadProductImage(MultipartFile file) throws IOException {
+
+        // 파일이 비어 있는지 확인
+        if(file.isEmpty() || file == null){
+            throw new IOException("업로드할 파일이 없습니다.");
+        }
+
+        // 업로드 디렉토리 생성
+        File uploadDir = new File(productUploadPath);
+        if(!uploadDir.exists()){
+            boolean created = uploadDir.mkdirs();
+            if(!created){
+                throw new IOException("상품 이미지 디렉토리 생성을 실패했습니다." + productUploadPath);
+            }
+            log.info("상품 이미지 디렉토리 생성 : {}",productUploadPath);
+
+            String 클라이언트가_업로드한_파일이름 = file.getOriginalFilename();
+            if(클라이언트가_업로드한_파일이름 == null || 클라이언트가_업로드한_파일이름.isEmpty()){
+                throw new IOException("파일 이름이 유효하지 않습니다.");
+            }
+
+            String 확장자 = "";
+            int 마지막_마침표의_위치 = 클라이언트가_업로드한_파일이름.lastIndexOf('.');
+            if(마지막_마침표의_위치 > 0) {
+                확장자 = 클라이언트가_업로드한_파일이름.substring(마지막_마침표의_위치);
+            }
+            String 메인이미지명칭 = UUID.randomUUID().toString() + 확장자;
+            Path 파일_저장될_경로 = Paths.get(productUploadPath, 메인이미지명칭);
+
+            try {
+
+            } catch (Exception e) {
+                log.error("상품 이미지 저장 중 오류 발생 : {}",e.getMessage());
+                throw new IOException("상품 이미지 저장에 실패했습니다. : " + e.getMessage());
+            }
+        }
+
+
+        // DB에 저장할 상대 경로 반환
+
+
+
+        return "";
+    }
+
+
 
 }
 
