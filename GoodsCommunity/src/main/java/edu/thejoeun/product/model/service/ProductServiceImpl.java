@@ -1,6 +1,7 @@
 package edu.thejoeun.product.model.service;
 
 
+import edu.thejoeun.common.util.FileUploadService;
 import edu.thejoeun.product.model.dto.Product;
 import edu.thejoeun.product.model.mapper.ProductMapper;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,7 @@ import java.util.List;
 public class ProductServiceImpl implements ProductService {
 
     private final ProductMapper productMapper;
+    private final FileUploadService fileUploadService;
 
     /*
      public List<Product> getAllProducts() {
@@ -99,23 +101,43 @@ public class ProductServiceImpl implements ProductService {
 
         // 만약에 이미지 파일이 있으면 처리
         if(imageFile != null && !imageFile.isEmpty()) {
+            // 이미지가 null 이 아닐 경우 이미지까지 등록
             try{
 
-                //
+                // 상품을 먼저 등록해서 productId 생성
+                int result = productMapper.insertProduct(product);
+
+                // sql 에서 rows 행 추가 결과가 1개 이상이면 insert 성공!
+                // 1개이상 성공한게 맞다면
+                if(result > 0) {
+                    String imageUrl = fileUploadService.uploadProductImage(imageFile, product.getId(), "main");
+
+                    // 이미지 URL을 product 에 설정하고 업데이트
+                     product.setImageUrl(imageUrl);
+                     productMapper.updateProduct(product);
+
+                     log.info("상품 등록 완료 - ID : {}, Name : {}, ImageUrl : {}",
+                             product.getId(), product.getProductName(), imageUrl);
+                } else {
+                    log.error("상품 등록 실패 - {}", product.getProductName());
+                    throw new RuntimeException("상품 등록에 실패했습니다.");
+                }
 
             }catch(Exception e) {
                 log.error("파일 업로드 실패 : ",e);
                 throw new RuntimeException("이미지 업로드에 실패했습니다.");
             }
-        }
-
-
-        int result = productMapper.insertProduct(product);
-        if(result > 0) {
-            log.info("상품 등록 완료 - ID : {}, Name : {}",product.getId(), product.getProductName());
         } else {
-            log.error("상품 등록 실패 - {}", product.getProductName());
-            throw  new RuntimeException("상품 등록에 실패했습니다.");
+            // 이미지가 없을 경우 상품만 등록
+
+            int result = productMapper.insertProduct(product);
+            if(result > 0) {
+                log.info("상품 등록 완료 - ID : {}, Name : {}",product.getId(), product.getProductName());
+            } else {
+                log.error("상품 등록 실패 - {}", product.getProductName());
+                throw  new RuntimeException("상품 등록에 실패했습니다.");
+            }
+
         }
 
     }
@@ -144,6 +166,7 @@ public class ProductServiceImpl implements ProductService {
         }
 
     }
+
     @Override
     @Transactional
     public void deleteProduct(int id) {
