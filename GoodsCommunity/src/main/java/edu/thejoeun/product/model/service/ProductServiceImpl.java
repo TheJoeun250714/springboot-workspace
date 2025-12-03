@@ -164,10 +164,18 @@ TODO : 새 이미지가 존재하는 경우 :
         // void validateProduct(product);
         // 메서드를 만들어, 데이터를 저장하기 전에 백엔드에서 한 번 더 유효성 검사 진행
         try{
-            if(existingProduct.getImageUrl() != null && !existingProduct.getImageUrl().isEmpty()) {
-                String imageUrl = fileUploadService.uploadProductImage(imageFile, product.getId(), "main");
-                product.setImageUrl(imageUrl);
+
+            if(imageFile != null && !imageFile.isEmpty()) {
+
+                if(existingProduct.getImageUrl() != null && !existingProduct.getImageUrl().isEmpty()) {
+                    String imageUrl = fileUploadService.uploadProductImage(imageFile, product.getId(), "main");
+                    product.setImageUrl(imageUrl);
+                }
+            } else{
+                // 이미지를 수정하지 않은 경우 기본 이미지 유지
+                product.setImageUrl(existingProduct.getImageUrl());
             }
+
             int result = productMapper.updateProduct(product);
             if(result > 0) {
                 log.info("상품 수정 완료 - ID : {}",product.getId());
