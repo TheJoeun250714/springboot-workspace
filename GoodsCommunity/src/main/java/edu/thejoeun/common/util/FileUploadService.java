@@ -178,7 +178,81 @@ public class FileUploadService {
          }
         return "";
      }
+//  FileUploadService.java 에 deleteFile 이라는 메서드를 만들어 기존 이미지 파일 삭제
 
+    /**
+     * 파일 삭제
+     * @param DB_저장된_경로와_파일명칭 DB에 에 저장된 파일의 폴더 경로
+     * @return 삭제 성공 여부
+     */
+    public boolean deleteFile(String DB_저장된_경로와_파일명칭) { //  DB_저장된_경로와_파일명칭 = filePath
+        if(DB_저장된_경로와_파일명칭 == null || DB_저장된_경로와_파일명칭.isEmpty()) {
+            log.warn("삭제할 파일 경로가 존재하지 않습니다.");
+            return false;
+        }
+
+        try{
+            // 1. DB 에 저장되어 있는 상대경로를 절대경로로 반환하여 처리
+            //   현재 나의 컴퓨터에서 어디에 파일이 존재하는지 위치를 완벽하게 확인하기 위한 작업으로
+            //   uploadPath와  productUploadPath 는 C:/ D:/ E:/ / 부터 각 이미지 폴더까지 파일이름빼고 모든게 완벽하게 작성되어 있는 변수명으로
+            //   DB에서 프로필에서 사용하는 이미지인가, 상품에서 사용하는 이미지인가 구분하기 위하여 넣어준
+            //  /profile_images/ 와 /product_images/ 를 제거하고, 본래의 저장된 상품의 명칭만 가져오겠다 작업하여
+            //  기존 완벽한 경로 + "/" 상품의 명칭으로 처리
+
+            String 절대_경로; // 절대 경로 = absolutePath
+
+            // 프로필 이미지인 경우
+            if(DB_저장된_경로와_파일명칭.startsWith("/profile_images/")) {
+                String 프로필_이미지_파일경로 = DB_저장된_경로와_파일명칭.replace("/profile_images/", "");
+                절대_경로 = uploadPath + "/" + 프로필_이미지_파일경로;
+            }
+            else if (DB_저장된_경로와_파일명칭.startsWith("/product_images/")) {
+                String 상품_이미지_파일경로 = DB_저장된_경로와_파일명칭.replace("/product_images/", "");
+                절대_경로 = productUploadPath + "/" + 상품_이미지_파일경로;
+            }
+            else {
+                // 기타 경로
+                log.warn("지원하지 않는 파일 경로 형식입니다. {}", DB_저장된_경로와_파일명칭);
+                return false;
+            }
+
+            // 위에서 만들어준 프로필 사진이나, 제품 메인 사진 중에서 삭제하고자 하는 파일의 경로와 명칭은 절대경로 변수 내부에 데이터가 저장되어 있음
+
+            File file = new File(절대_경로);
+
+            // 절대경로 + 파일 이름이 존재하는지 확인
+            if(!file.exists()){
+                log.warn("삭제하려는  파일이 존재하지 않습니다: {}", 절대_경로);
+                return false;
+            }
+
+            // 파일 삭제
+            // delete() 메서드의 경우 결과가 true false 로 나온다.
+            // 파일 삭제에 성공하면 true, 파일 삭제에 실패하면 false
+            boolean 파일제거하기 = file.delete();
+
+            if(파일제거하기) {
+                log.info("파일 삭제 성공 : {}", 절대_경로);
+
+                // 상품 이미지인 경우, 폴더가 비어있으면 폴더도 삭제
+                if(DB_저장된_경로와_파일명칭.startsWith("/product_images/")) {
+                    // 비어있는 상품 폴더 삭제하는 기능을 활용하여 삭제 (file.getParentFile())
+                }
+            } else {
+                log.error("파일 삭제 실패 : {}",절대_경로);
+            }
+            return 파일제거하기;
+        } catch (Exception e) {
+            log.error("파일 삭제 중 오류 발생 : {}", e.getMessage());
+            return false;
+        }
+    }
+
+    // 폴더를 명령어나 서버에서 삭제할 때 순서가 있다.
+    // 폴더안에 파일이 존재하면 파일을 우선적으로 삭제한 다음에 폴더 삭제가 이루어짐
+    // 폴더 내부에 파일이 존재하면 폴더만 삭제한다는 개념이 아님
+    // 비어있는 상품 폴더 삭제
+    // 여러 파일 한 번에 삭제
 }
 
 
