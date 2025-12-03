@@ -156,6 +156,7 @@ TODO : 새 이미지가 존재하는 경우 :
 
         // 상품이 존재하는지 확인
         Product existingProduct = productMapper.getProductById(product.getId());
+
         if(existingProduct == null) {
             log.warn("수정할 상품을 찾을 수 없습니다. : {}", product.getId());
             throw new IllegalArgumentException("존재하지 않는 상품입니다.");
@@ -167,10 +168,8 @@ TODO : 새 이미지가 존재하는 경우 :
 
             if(imageFile != null && !imageFile.isEmpty()) {
 
-                if(existingProduct.getImageUrl() != null && !existingProduct.getImageUrl().isEmpty()) {
                     String imageUrl = fileUploadService.uploadProductImage(imageFile, product.getId(), "main");
                     product.setImageUrl(imageUrl);
-                }
             } else{
                 // 이미지를 수정하지 않은 경우 기본 이미지 유지
                 product.setImageUrl(existingProduct.getImageUrl());
