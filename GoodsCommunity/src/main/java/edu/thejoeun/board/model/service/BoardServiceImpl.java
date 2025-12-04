@@ -55,6 +55,9 @@ public class BoardServiceImpl  implements BoardService {
             // 2. 게시물 저장을 먼저한다 (ID 생성을 위하여!)
             boardMapper.insertBoard(board);
             log.info("게시물 저장 완료 : {}", board.getId());
+
+            boolean 이미지존재유무 = false;
+
             // 3. 생성된 게시물 id 를 기반으로 메인 이미지 업로드 처리
             // 게시물을 등록하는 클라이언트가 메인, 상세이미지를 필수로 업로드한다는 보장이 없기 때문에
             // 유저가 이미지를 등록했는지, 안했는지의 유무에 따라 폴더를 생성하고, 이미지를 폴더내에 추가하는 작업 진행
@@ -62,18 +65,24 @@ public class BoardServiceImpl  implements BoardService {
                 // board = 데이터베이스와 상호작용할 변수명칭
                 String mainImagePath = uploadMainImage(board.getId(), mainImage); // 메인 이미지 저장할 때, fileUploadService 에서 폴더에 저장한 다음에 db에 저장
                 board.setBoardMainImage(mainImagePath);
+                이미지존재유무 = true;
             }
             // 4. 생성된 게시물 id 를 기반으로 상세 이미지 업로드 처리
             if(detailImage != null && !detailImage.isEmpty()){
-                String detailImagePath = detailImage.getOriginalFilename();
-                // TODO : uploadDetailImage 메서드를 따로 생성하여 업로드 관련 작업 진행
+                String detailImagePath = uploadDetailImage(board.getId(), detailImage);
+                board.setBoardDetailImage(detailImagePath);
+                이미지존재유무 = true;
             }
 
             // 5. 이미지 경로 DB 업데이트 - updateBoardImages(board) 메서드 생성하기
-            boardMapper.updateBoardImages(board);
-
+            // 무조건 실행하는 것이 아니라 main 과 detail 에서 수정작업이 일어난게 맞으면 업데이트
+            if(이미지존재유무) {
+                boardMapper.updateBoardImages(board);
+                log.info("게시물 이미지 경로 db 업데이트 완료");
+            }
 
             // 6. websocket을 활용하여 실시간 알림 전송
+            sendBoardNotification(board);
         }catch(Exception e){
             log.error("게시물 이미지 업로드 중 오류 발생 : {}", e.getMessage());
             throw new RuntimeException("게시물 이미지 업로드에 실패했습니다 : " + e.getMessage());
@@ -97,7 +106,7 @@ public class BoardServiceImpl  implements BoardService {
     }
 
     /**
-     *
+     * 상세 이미지 여러 개 업로드 (최대 5장)
      * @param 게시물번호
      * @param 상세이미지들
      * @return
