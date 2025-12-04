@@ -1,7 +1,9 @@
 package edu.thejoeun.board.model.service;
 
 import edu.thejoeun.board.model.dto.Board;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface BoardService {
@@ -12,6 +14,6 @@ public interface BoardService {
     /*
     TODO : 게시물 메인 이미지, 게시물 상세 이미지 전달받는 매개변수 두가지 추가
      */
-    void createBoard(Board board);
+    void createBoard(Board board, MultipartFile mainImage, MultipartFile detailImage) throws IOException;
 
 }

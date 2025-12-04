@@ -24,7 +24,7 @@ public class BoardController {
     // serviceImpl 에서 재 사용된 기능을 활용할 수 있다.
     private final BoardService boardService;
     private final SchedulingService schedulingService;
-    private final SimpMessagingTemplate messagingTemplate; // WebSocket 메세지 전송
+
 
     // 전체 게시물 조회
     @GetMapping("/all")
@@ -59,6 +59,8 @@ public class BoardController {
 
         boardService.createBoard(board); //게시글 저장
 
+        /*
+        service Impl 로 이동할 예정
         //WebSocket을 통해 실시간 알림 전송
         Map<String, Object> notification = new HashMap<>();
         notification.put("msg", "새로운 게시글이 작성되었습니다.");
@@ -71,6 +73,7 @@ public class BoardController {
         // /topic/notifications 을 구독한 모든 클라이언트에게 전송
         messagingTemplate.convertAndSend("/topic/notifications", notification);
         log.info("새 게시글 작성 및 WebSocket 알림 전송 완료 : {}", board.getTitle()); // 개발자 회사 로그용
+         */
     }
 
 }
