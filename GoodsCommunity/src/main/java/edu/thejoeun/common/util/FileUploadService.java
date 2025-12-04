@@ -55,6 +55,8 @@ public class FileUploadService {
     @Value("${file.product.upload.path}")
     private String productUploadPath;
 
+    @Value("${file.board.upload.path}")
+    private String boardUploadPath;
     /**
      * 프로필 이미지 업로드
      * @param file 업로드할 이미지 파일
@@ -162,6 +164,60 @@ public class FileUploadService {
 
         return "/product_images/" + productId + "/" + fileName;
     }
+
+    /**
+     * 게시물 이미지 업로드
+     * @param file 업로드할 게시물 이미지 파일
+     * @param boardId 게시물 아이디
+     * @param imageType main 또는 detail 이미지
+     * @return 저장된 파일의 경로(DB에 저장할 상대 경로)
+     * @throws IOException 파일 처리 중 오류 발생 시 예외 처리
+     */
+    public String uploadBoardImage(MultipartFile file, int boardId, String imageType) throws IOException {
+        if( file == null || file.isEmpty()) throw new IOException("업로드할 파일이 없습니다.");
+
+        // 게시물별 폴더 생성 : /board_images/1001 게시물번호별 폴더 생성
+        String boardFolder = boardUploadPath + "/" + boardId;
+
+        File uploadDir = new  File(boardFolder);
+        if(!uploadDir.exists()){
+            boolean created = uploadDir.mkdirs();
+            if(!created){
+                throw new IOException("게시물 이미지 디렉토리 생성을 실패했습니다 : " + boardFolder);
+            }
+            log.info("게시물 이미지 디렉토리 생성 : {}", boardFolder);
+        }
+
+        String client_upload_file = file.getOriginalFilename();
+        if(client_upload_file == null || client_upload_file.isEmpty()){
+            throw new IOException("파일 이름이 유효하지 않습니다.");
+        }
+
+        String client_upload_fileName =  client_upload_file;
+
+        Path save_to_path = Paths.get(boardFolder, client_upload_fileName);
+
+        try{
+            Files.copy(file.getInputStream(), save_to_path, StandardCopyOption.REPLACE_EXISTING);
+            log.info("게시물 이미지 업로드 성공 : {} -> {}", file.getOriginalFilename(), client_upload_fileName);
+        }catch (Exception e){
+            log.error("게시물 이미지 저장 중 오류 발생 : {}",e.getMessage());
+            throw new IOException("게시물 이미지 저장에 실패했습니다 :" + e.getMessage());
+        }
+
+        return "/board_images/" + boardId + "/" + client_upload_fileName;
+    }
+
+
+
+
+
+
+
+
+
+
+
 
 
      private String get확장자메서드(MultipartFile f) {

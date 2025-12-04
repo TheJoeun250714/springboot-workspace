@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
 import java.util.List;
@@ -45,8 +46,16 @@ public class BoardController {
         return schedulingService.getPopularBoards();
     }
 
+
+
+    /*
+ TODO : 게시물 메인 이미지, 게시물 상세 이미지 전달받는 매개변수 두가지 추가
+  */
     @PostMapping  // api endpoint = /api/board 맨 위에 작성한 requestMapping 해당
-    public void createBoard(@RequestBody Board board){
+    public void createBoard(@RequestPart Board board,
+                            @RequestPart(required = false) MultipartFile main_image,
+                            @RequestPart(required = false) MultipartFile detail_image
+                            ){
 
         boardService.createBoard(board); //게시글 저장
 

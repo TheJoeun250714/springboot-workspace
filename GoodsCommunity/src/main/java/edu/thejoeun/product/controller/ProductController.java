@@ -141,9 +141,7 @@ public class ProductController {
      */
     @PutMapping("/{id}")
     public ResponseEntity<Map<String, Object>> upDateProduct(@PathVariable int id,
-                                                             // 데이터가 하나일 때는 기본값 value
                                                              @RequestPart("product") Product product,
-                                                             // 데이터가 2가지 이상일 때는 각각 어떤 속성을 참조하지 작성
                                                             @RequestPart(value="imageFile",required=false) MultipartFile imageFile) {
         log.info("Put /api/product/{} - 상품 수정",id);
         log.info("받은 상품 정보 : {}", product);
