@@ -38,4 +38,10 @@
         SET view_count = view_count + 1
         WHERE id = #{id}
     </update>
+    <update id="updateBoardImages" parameterType="Board">
+        UPDATE board
+        SET board_main_image = #{boardMainImage}
+        board_detail_image = #{boardDetailImage}
+        WHERE id = #{id}
+    </update>
 </mapper>

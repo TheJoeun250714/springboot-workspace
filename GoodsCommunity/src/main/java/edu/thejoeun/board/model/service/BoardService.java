@@ -14,6 +14,6 @@ public interface BoardService {
     /*
     TODO : 게시물 메인 이미지, 게시물 상세 이미지 전달받는 매개변수 두가지 추가
      */
-    void createBoard(Board board, MultipartFile mainImage, MultipartFile detailImage) throws IOException;
+    void createBoard(Board board, MultipartFile mainImage, List<MultipartFile> detailImage) throws IOException;
 
 }
